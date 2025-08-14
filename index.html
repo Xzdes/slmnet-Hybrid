@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project "Smart Gatekeeper"</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Smart Gatekeeper</h1>
+        <h2>Client-Side Hybrid AI Filter</h2>
+
+        <div id="chat-container">
+            <div class="message message-bot">
+                <p>Hello! I'm a lightweight model running in your browser. I handle simple questions and pass complex ones to my 'big brother' on the server. Let's get started!</p>
+            </div>
+        </div>
+
+        <div class="input-container">
+            <input id="user-input" type="text" placeholder="Type your request...">
+            <button id="send-btn">Send</button>
+        </div>
+
+        <hr>
+
+        <div id="feedback-container" class="hidden">
+            <h3>Feedback Panel</h3>
+            <p>
+                Your last query: "<b id="feedback-query">...</b>"
+            </p>
+            <p>
+                I classified it as: <b id="feedback-decision">...</b>
+            </p>
+            <p>Was this classification correct?</p>
+            <div class="feedback-buttons">
+                <button id="correct-btn" class="btn-correct">Yes, that's right</button>
+                <button id="incorrect-btn" class="btn-incorrect">No, that's wrong</button>
+            </div>
+        </div>
+
+        <div id="teach-container" class="hidden">
+            <h3>Teach New Response</h3>
+            <p>
+                Okay, I understand that the query "<b id="teach-query">...</b>" is simple.
+            </p>
+            <p>
+                How should I respond to it in the future?
+            </p>
+            <div class="input-container">
+                <input id="response-input" type="text" placeholder="Enter the correct response here...">
+                <button id="teach-btn">Teach</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="slmnet.js" defer></script>
+    <script src="api.js" defer></script>
+    <script src="gatekeeper.js" defer></script>
+    <script src="main.js" defer></script>
+
+</body>
+</html>

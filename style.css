@@ -1,0 +1,255 @@
+/**
+ * @file style.css
+ * @description Финальные стили для проекта "Умный Привратник" v1.0.
+ * Включает стили для всех элементов интерфейса, включая системные сообщения и панели.
+ */
+
+/* --- 1. Глобальные переменные (Палитра) --- */
+:root {
+    --primary-color: #007bff;
+    --primary-hover: #0069d9;
+    --success-color: #28a745;
+    --success-hover: #218838;
+    --danger-color: #dc3545;
+    --danger-hover: #c82333;
+    
+    --background-color: #f4f7f9;
+    --container-bg: #ffffff;
+    --border-color: #dee2e6;
+    --shadow-color: rgba(0, 0, 0, 0.08);
+
+    --text-color: #212529;
+    --text-light: #6c757d;
+    --text-on-primary: #ffffff;
+
+    --bot-message-bg: #e9ecef;
+    --user-message-bg: var(--primary-color);
+    --system-message-color: var(--text-light);
+    --teach-panel-bg: #eaf3ff;
+    --teach-panel-border: #b8d6fb;
+}
+
+/* --- 2. Базовые стили и сброс --- */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+    margin: 0;
+    min-height: 100vh;
+}
+
+/* --- 3. Основной контейнер и заголовки --- */
+.container {
+    width: 100%;
+    max-width: 650px;
+    background-color: var(--container-bg);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px var(--shadow-color);
+    padding: 24px 32px;
+}
+
+h1, h2 {
+    text-align: center;
+    margin: 0;
+}
+
+h1 {
+    color: var(--primary-color);
+    font-size: 2.2em;
+    font-weight: 600;
+}
+
+h2 {
+    color: var(--text-light);
+    font-size: 1.1em;
+    font-weight: 400;
+    margin-bottom: 24px;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 32px 0;
+}
+
+/* --- 4. Окно чата и сообщения --- */
+#chat-container {
+    min-height: 300px;
+    max-height: 50vh;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.message {
+    max-width: 85%;
+    padding: 10px 16px;
+    border-radius: 18px;
+    word-wrap: break-word;
+    line-height: 1.5;
+}
+
+.message p {
+    margin: 0;
+}
+
+.message-bot {
+    background-color: var(--bot-message-bg);
+    color: var(--text-color);
+    border-bottom-left-radius: 4px;
+    align-self: flex-start;
+}
+
+.message-user {
+    background-color: var(--user-message-bg);
+    color: var(--text-on-primary);
+    border-bottom-right-radius: 4px;
+    align-self: flex-end;
+}
+
+/* Стиль для системных сообщений (очень важный!) */
+.message-system {
+    font-size: 0.9em;
+    font-style: italic;
+    color: var(--system-message-color);
+    text-align: center;
+    align-self: center;
+    padding: 4px 0;
+}
+
+/* --- 5. Поле ввода и кнопки --- */
+.input-container {
+    display: flex;
+    gap: 10px;
+}
+
+input[type="text"] {
+    flex-grow: 1;
+    padding: 12px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.15);
+}
+
+button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    background-color: var(--primary-color);
+    color: var(--text-on-primary);
+}
+
+button:hover {
+    background-color: var(--primary-hover);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+button:disabled {
+    background-color: #a0bdf0;
+    cursor: not-allowed;
+}
+
+/* --- 6. Панели обратной связи и обучения --- */
+#feedback-container, #teach-container {
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 16px;
+}
+
+#feedback-container h3, #teach-container h3 {
+    margin-top: 0;
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: 500;
+}
+
+#feedback-container p, #teach-container p {
+    text-align: center;
+    margin: 8px 0 16px 0;
+    color: var(--text-light);
+}
+
+#feedback-container b, #teach-container b {
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+/* Панель №1: Обратная связь */
+#feedback-container {
+    background-color: #f8f9fa;
+    border: 1px solid var(--border-color);
+}
+#feedback-container h3 { color: var(--text-light); }
+
+.feedback-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 16px;
+}
+
+.feedback-buttons button {
+    padding: 8px 16px;
+    font-size: 14px;
+}
+
+.btn-correct {
+    background-color: var(--success-color);
+}
+.btn-correct:hover {
+    background-color: var(--success-hover);
+}
+
+.btn-incorrect {
+    background-color: var(--danger-color);
+}
+.btn-incorrect:hover {
+    background-color: var(--danger-hover);
+}
+
+/* Панель №2: Обучение ответу */
+#teach-container {
+    background-color: var(--teach-panel-bg);
+    border: 1px solid var(--teach-panel-border);
+}
+#teach-container h3 { color: var(--primary-color); }
+
+#teach-btn {
+    background-color: var(--success-color);
+}
+#teach-btn:hover {
+    background-color: var(--success-hover);
+}
+
+
+/* --- 7. Вспомогательный класс --- */
+.hidden {
+    display: none !important;
+}
