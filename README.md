@@ -73,7 +73,6 @@ If the Gatekeeper misclassifies a query, the user can correct it:
 .
 ├── index.html          # The main HTML structure of the application.
 ├── style.css           # All styles for the user interface.
-├── slmnet.js           # The self-contained neural network library (Tensor, Layers, Optimizers).
 ├── api.js              # A stub that simulates the server-side LLM API.
 ├── gatekeeper.js       # The project's core: classification, storage, and learning logic.
 └── main.js             # The main script: connects the UI to the gatekeeper and manages events.
