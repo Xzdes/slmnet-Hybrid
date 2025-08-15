@@ -1,13 +1,15 @@
 /**
  * @file gatekeeper.js
- * @description Core of the "Smart Gatekeeper" project. Final Multilingual Version.
+ * @description Core of the "Smart Gatekeeper" project. Final Multilingual Version with N-gram logic.
  * The initial brain contains both English and Russian phrases.
+ * This version adds bigram checking for more accurate classification.
  */
 
 const gatekeeper = {
     brain: {
         vocab: {},
         simpleVocab: new Set(),
+        simpleNgrams: new Set(), // NEW: For storing word pairs like "how are"
         categories: ["simple", "complex"],
         simpleResponses: {},
         memory: []
@@ -16,6 +18,7 @@ const gatekeeper = {
 
     async init() {
         this.brain.simpleVocab = new Set();
+        this.brain.simpleNgrams = new Set();
         // Новый ключ для мультиязычного мозга, чтобы не было конфликтов
         const savedBrain = localStorage.getItem('gatekeeper_brain_v1_multi');
         if (savedBrain) {
@@ -25,6 +28,7 @@ const gatekeeper = {
             this.brain.simpleResponses = loadedBrain.simpleResponses;
             this.brain.memory = loadedBrain.memory;
             this.brain.simpleVocab = new Set(loadedBrain.simpleVocab || []);
+            this.brain.simpleNgrams = new Set(loadedBrain.simpleNgrams || []); // NEW: Load n-grams
         } else {
             console.log("[Gatekeeper] Brain not found. Creating a new multilingual one...");
             this._prepareInitialBrain();
@@ -37,19 +41,39 @@ const gatekeeper = {
     classify(text) {
         if (!this.isInitialized) return "complex";
         const normalizedText = this._normalizeText(text);
+
+        // Rule #1: Exact Match. Highest priority.
         if (this.brain.simpleResponses.hasOwnProperty(normalizedText)) {
             return "simple";
         }
+
         const words = normalizedText.split(/\s+/).filter(word => word.length > 0);
-        if (words.length === 0) return "simple";
+        if (words.length === 0) return "simple"; // Empty query is simple
+
+        // Rule #2: Unknown Word Check. If any word is unfamiliar, it's complex.
         for (const word of words) {
             if (!this.brain.simpleVocab.has(word)) {
                 console.log(`[Gatekeeper] Found an unknown/complex word: "${word}". Query classified as 'complex'.`);
                 return "complex";
             }
         }
+
+        // Rule #3: N-gram Structure Check. All words are known, but is their order correct?
+        // We only perform this check for multi-word queries. Single known words that passed Rule #2 are simple.
+        if (words.length > 1) {
+            for (let i = 0; i < words.length - 1; i++) {
+                const bigram = `${words[i]} ${words[i+1]}`;
+                if (!this.brain.simpleNgrams.has(bigram)) {
+                    console.log(`[Gatekeeper] Known words, but unknown structure (bigram): "${bigram}". Query classified as 'complex'.`);
+                    return "complex";
+                }
+            }
+        }
+
+        // If all words and their bigram structures are known, classify as simple.
         return "simple";
     },
+
 
     getSimpleResponse(text) {
         const normalizedText = this._normalizeText(text);
@@ -65,6 +89,14 @@ const gatekeeper = {
                 this.brain.simpleResponses[normalizedText] = newResponse;
             }
             words.forEach(word => this.brain.simpleVocab.add(word));
+            
+            // NEW: Learn bigrams from the simple phrase
+            if (words.length > 1) {
+                for (let i = 0; i < words.length - 1; i++) {
+                    const bigram = `${words[i]} ${words[i+1]}`;
+                    this.brain.simpleNgrams.add(bigram);
+                }
+            }
         }
         this._updateVocab(normalizedText);
         if (!this.brain.memory.some(mem => mem.input === normalizedText)) {
@@ -75,7 +107,11 @@ const gatekeeper = {
     },
 
     _saveBrain() {
-        const brainToSave = { ...this.brain, simpleVocab: Array.from(this.brain.simpleVocab) };
+        const brainToSave = {
+            ...this.brain,
+            simpleVocab: Array.from(this.brain.simpleVocab),
+            simpleNgrams: Array.from(this.brain.simpleNgrams) // NEW: Save n-grams
+        };
         localStorage.setItem('gatekeeper_brain_v1_multi', JSON.stringify(brainToSave));
     },
     
@@ -136,9 +172,19 @@ const gatekeeper = {
             this._updateVocab(normalizedInput);
             if(mem.category === 'simple') {
                 this.brain.simpleResponses[normalizedInput] = mem.response;
-                normalizedInput.split(/\s+/).forEach(word => {
-                    if(word) this.brain.simpleVocab.add(word);
+                const words = normalizedInput.split(/\s+/).filter(w => w);
+
+                words.forEach(word => {
+                    this.brain.simpleVocab.add(word);
                 });
+
+                // NEW: Add bigrams for initial simple phrases
+                if (words.length > 1) {
+                    for (let i = 0; i < words.length - 1; i++) {
+                        const bigram = `${words[i]} ${words[i+1]}`;
+                        this.brain.simpleNgrams.add(bigram);
+                    }
+                }
             }
         });
     }
